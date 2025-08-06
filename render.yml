@@ -1,0 +1,2 @@
+build:
+  preBuildCommand: pip install --upgrade pip setuptools wheel
