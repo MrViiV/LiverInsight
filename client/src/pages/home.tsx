@@ -110,10 +110,7 @@ export default function Home() {
                 <Shield className="h-4 w-4 text-green-500" />
                 <span>Data Protected</span>
               </div>
-              <div className="flex items-center space-x-2 text-sm text-gray-600">
-                <Award className="h-4 w-4 text-blue-500" />
-                <span>FDA Cleared</span>
-              </div>
+              
               <div className="flex items-center space-x-2 text-sm text-gray-600">
                 <Stethoscope className="h-4 w-4 text-green-500" />
                 <span>Clinically Validated</span>
