@@ -41,14 +41,14 @@ if command -v python3 &> /dev/null; then
     echo "Installing ML service dependencies..."
     
     # Core dependencies for ML service
-    python3 -m pip install fastapi==0.104.1
-    python3 -m pip install "uvicorn[standard]==0.24.0"
-    python3 -m pip install numpy==1.24.3
-    python3 -m pip install pandas==2.0.3
-    python3 -m pip install scikit-learn==1.3.0
-    python3 -m pip install joblib==1.3.2
-    python3 -m pip install requests==2.31.0
-    python3 -m pip install xgboost==2.0.3
+    python3 -m pip install --user fastapi==0.104.1
+    python3 -m pip install --user "uvicorn[standard]==0.24.0"
+    python3 -m pip install --user numpy==1.24.3
+    python3 -m pip install --user pandas==2.0.3
+    python3 -m pip install --user scikit-learn==1.3.0
+    python3 -m pip install --user joblib==1.3.2
+    python3 -m pip install --user requests==2.31.0
+    python3 -m pip install --user xgboost==2.0.3
     
     echo "✓ Python dependencies installed successfully"
 else
