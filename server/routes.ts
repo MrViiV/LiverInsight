@@ -58,3 +58,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   const httpServer = createServer(app);
   return httpServer;
 }
+
+const API_BASE_URL = import.meta.env.VITE_ML_BACKEND_URL;
+
+fetch(`${API_BASE_URL}/predict`, {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify(data),
+});
