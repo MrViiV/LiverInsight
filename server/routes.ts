@@ -23,10 +23,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const result = await storage.predictLiverDisease(data);
 
       res.json(result);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Prediction error:", error);
+      
+      // Check if it's an ML service specific error
+      if (error.message?.includes('ML prediction service unavailable')) {
+        return res.status(503).json({
+          message: "ML prediction service unavailable",
+          details: "The machine learning service is not running. Please ensure both model and scaler files are available and the ML service is started.",
+          error: error.message
+        });
+      }
+      
       res.status(500).json({
         message: "Internal server error during prediction",
+        error: error.message || "Unknown error occurred"
       });
     }
   });

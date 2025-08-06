@@ -25,13 +25,22 @@ Frontend (React) → Node.js API → Python ML Service → Your Model
 
 ## 📋 Setup Instructions
 
-### Step 1: Add Your Model File
+### Step 1: Add Your Model Files
 
-Place your trained model in one of these locations:
-- `ml_service/liver_disease_model.pkl` ← **Recommended**
-- `ml_service/model.pkl`
-- `liver_disease_model.pkl` (project root)
-- `model.pkl` (project root)
+**Both files are required:**
+
+1. **Model file** - Place in one of these locations:
+   - `ml_service/liver_disease_model.pkl` ← **Recommended**
+   - `ml_service/model.pkl`
+   - `liver_disease_model.pkl` (project root)
+   - `model.pkl` (project root)
+
+2. **Scaler file** - Place in one of these locations:
+   - `ml_service/standard_scaler.pkl` ← **Recommended**
+   - `ml_service/scaler.pkl`
+   - `standard_scaler.pkl` (project root)
+   - `scaler.pkl` (project root)
+   - `ml_service/liver_disease_scaler.pkl`
 
 ### Step 2: Verify Model Input Features
 
@@ -94,16 +103,18 @@ Option B - Combined start:
 ✅ **Node.js Backend**: Modified to call Python ML service with fallback to rule-based calculation
 ✅ **Python ML Service**: FastAPI service ready to serve your model
 ✅ **Data Processing**: Automatic conversion from form data to model input format
-✅ **Error Handling**: Graceful fallback if ML service is unavailable
+✅ **Error Handling**: Proper error messages when ML service or files are unavailable
 ✅ **Integration Testing**: Test framework to verify everything works
 
 ## 🧪 Testing Your Model
 
-1. **Place your model file** in `ml_service/liver_disease_model.pkl`
+1. **Place your model files**: 
+   - `ml_service/liver_disease_model.pkl`
+   - `ml_service/standard_scaler.pkl`
 2. **Run integration test**: `python3 test_ml_integration.py`
 3. **Start services**: Both Python ML service and Node.js app
 4. **Test via UI**: Fill out the form at http://localhost:5000
-5. **Check predictions**: Should now use your actual ML model
+5. **Check predictions**: Should now use your actual ML model with proper scaling
 
 ## 🔧 Model Customization
 
@@ -136,10 +147,11 @@ Update the `feature_columns` list and `preprocess_input()` function to match you
 
 ## 🚨 Troubleshooting
 
-### "Model not found"
-- Verify your .pkl file is in the correct location
+### "Model not found" or "Scaler not found"
+- Verify both .pkl files are in the correct locations
 - Check file permissions
-- Ensure the file is a valid pickle file
+- Ensure both files are valid pickle files
+- Restart the ML service after adding files
 
 ### "Prediction errors"
 - Verify feature preprocessing matches your training data
@@ -153,9 +165,12 @@ Update the `feature_columns` list and `preprocess_input()` function to match you
 
 ## 🎉 Next Steps
 
-1. **Upload your model**: Place your .pkl file in the designated location
+1. **Upload your files**: 
+   - Place your model .pkl file in the designated location
+   - Place your scaler .pkl file in the designated location
 2. **Test integration**: Run the test script to verify everything works
 3. **Customize if needed**: Adjust feature processing for your specific model
-4. **Deploy**: Both services are now ready for production use
+4. **Start services**: Run both Python ML service and Node.js app
+5. **Deploy**: Both services are now ready for production use
 
-The application will automatically use your ML model for predictions while maintaining the existing medical-themed interface and user experience!
+The application will now show proper error messages when files are missing and automatically use your ML model with standard scaling for predictions while maintaining the existing medical-themed interface!

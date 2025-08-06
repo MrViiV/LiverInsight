@@ -16,8 +16,9 @@ import uvicorn
 # Initialize FastAPI app
 app = FastAPI(title="Liver Disease Prediction API", version="1.0.0")
 
-# Global model variable
+# Global model variables
 model = None
+scaler = None
 feature_columns = None
 
 class PredictionInput(BaseModel):
@@ -41,8 +42,8 @@ class PredictionResponse(BaseModel):
     confidence: float
 
 def load_model():
-    """Load the trained model from pickle file"""
-    global model, feature_columns
+    """Load the trained model and scaler from pickle files"""
+    global model, scaler, feature_columns
     
     # Look for model files in common locations
     model_paths = [
@@ -52,6 +53,16 @@ def load_model():
         "ml_service/model.pkl"
     ]
     
+    scaler_paths = [
+        "standard_scaler.pkl",
+        "scaler.pkl",
+        "ml_service/standard_scaler.pkl",
+        "ml_service/scaler.pkl",
+        "liver_disease_scaler.pkl",
+        "ml_service/liver_disease_scaler.pkl"
+    ]
+    
+    # Load model
     model_path = None
     for path in model_paths:
         if os.path.exists(path):
@@ -59,13 +70,32 @@ def load_model():
             break
     
     if not model_path:
-        print("Warning: No model file found. Using mock predictions.")
+        print("Error: No model file found. ML service requires a trained model.")
         print(f"Searched paths: {model_paths}")
+        print("Please place your model file in one of the above locations.")
+        return False
+    
+    # Load scaler
+    scaler_path = None
+    for path in scaler_paths:
+        if os.path.exists(path):
+            scaler_path = path
+            break
+    
+    if not scaler_path:
+        print("Error: No scaler file found. ML service requires the standard scaler.")
+        print(f"Searched paths: {scaler_paths}")
+        print("Please place your scaler file in one of the above locations.")
         return False
     
     try:
+        # Load model
         model = joblib.load(model_path)
         print(f"Model loaded successfully from {model_path}")
+        
+        # Load scaler
+        scaler = joblib.load(scaler_path)
+        print(f"Scaler loaded successfully from {scaler_path}")
         
         # Try to load feature columns if available
         feature_path = model_path.replace('.pkl', '_features.pkl')
@@ -83,11 +113,14 @@ def load_model():
         
         return True
     except Exception as e:
-        print(f"Error loading model: {e}")
+        print(f"Error loading model or scaler: {e}")
         return False
 
 def preprocess_input(data: PredictionInput) -> np.ndarray:
     """Preprocess input data to match model's expected format"""
+    
+    if scaler is None:
+        raise ValueError("Scaler not loaded. Cannot preprocess data.")
     
     # Convert categorical variables to numeric (adjust based on your model's encoding)
     gender_encoded = 1 if data.gender.lower() == 'male' else 0
@@ -113,7 +146,11 @@ def preprocess_input(data: PredictionInput) -> np.ndarray:
         data.liverFunctionScore
     ]
     
-    return np.array(features).reshape(1, -1)
+    # Convert to numpy array and scale features
+    features_array = np.array(features).reshape(1, -1)
+    scaled_features = scaler.transform(features_array)
+    
+    return scaled_features
 
 def calculate_risk_level(probability: float) -> str:
     """Convert probability to risk level"""
@@ -140,7 +177,9 @@ async def health_check():
     return {
         "status": "healthy",
         "model_loaded": model is not None,
-        "feature_count": len(feature_columns) if feature_columns else 0
+        "scaler_loaded": scaler is not None,
+        "feature_count": len(feature_columns) if feature_columns else 0,
+        "ready_for_predictions": model is not None and scaler is not None
     }
 
 @app.post("/predict", response_model=PredictionResponse)
@@ -148,21 +187,19 @@ async def predict(data: PredictionInput):
     """Make prediction using the loaded model"""
     
     if model is None:
-        # Return mock prediction if model not loaded
-        mock_score = min(100, max(0, (data.age / 100 * 30) + 
-                                   (data.bmi > 25) * 20 + 
-                                   (data.alcoholConsumption > 7) * 25 + 
-                                   (data.smoking == 'yes') * 15))
-        
-        return PredictionResponse(
-            riskScore=mock_score,
-            riskLevel=calculate_risk_level(mock_score / 100),
-            probability=mock_score / 100,
-            confidence=0.75
+        raise HTTPException(
+            status_code=503, 
+            detail="ML model not loaded. Please ensure model file is available and restart the service."
+        )
+    
+    if scaler is None:
+        raise HTTPException(
+            status_code=503, 
+            detail="Standard scaler not loaded. Please ensure scaler file is available and restart the service."
         )
     
     try:
-        # Preprocess input
+        # Preprocess input (includes scaling)
         features = preprocess_input(data)
         
         # Make prediction

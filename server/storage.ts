@@ -45,11 +45,10 @@ export class MemStorage implements IStorage {
       const mlResponse = await this.callMLService(data);
       riskScore = mlResponse.riskScore;
       riskLevel = mlResponse.riskLevel;
-    } catch (error) {
-      console.error('ML service error, using fallback calculation:', error);
-      // Fallback to rule-based calculation if ML service fails
-      riskScore = this.calculateRiskScore(data);
-      riskLevel = this.determineRiskLevel(riskScore);
+    } catch (error: any) {
+      console.error('ML service error:', error);
+      // Throw error to frontend instead of using fallback
+      throw new Error(`ML prediction service unavailable: ${error.message || 'Service connection failed'}`);
     }
     
     const factors = this.analyzeRiskFactors(data);

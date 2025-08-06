@@ -17,10 +17,11 @@ Preferred communication style: Simple, everyday language.
 
 ## Backend Architecture
 - **Framework**: Express.js with TypeScript for RESTful API endpoints
-- **Prediction Engine**: Custom liver disease risk calculation algorithm implemented in the storage layer
+- **ML Integration**: Python FastAPI service integration for real-time machine learning predictions
+- **Prediction Engine**: Integrated ML model serving with automatic feature preprocessing and standard scaling
 - **API Design**: RESTful endpoints for prediction submission (/api/predict) and history retrieval (/api/predictions)
 - **Data Validation**: Zod schemas for request/response validation with strict medical parameter constraints
-- **Error Handling**: Centralized error middleware with proper HTTP status codes and medical context
+- **Error Handling**: Comprehensive error handling with ML service availability checking and detailed user feedback
 
 ## Data Storage Solutions
 - **Database**: PostgreSQL configured via Drizzle ORM for type-safe database operations
@@ -34,11 +35,20 @@ Preferred communication style: Simple, everyday language.
 - **Development Server**: Hot reload with Vite middleware integration and development banner for Replit environment
 - **Type Safety**: Strict TypeScript configuration with path mapping for clean imports
 
-## Medical Algorithm Design
-- **Risk Calculation**: Multi-factor analysis considering age, BMI, lifestyle factors, medical history, and liver function scores
-- **Risk Stratification**: Three-tier system (low/medium/high) with corresponding color coding and visual indicators
-- **Recommendation Engine**: Personalized health recommendations based on individual risk factors and assessment results
-- **Clinical Validation**: Algorithm designed for preliminary screening with appropriate medical disclaimers
+## ML Integration Architecture
+- **Python ML Service**: FastAPI-based microservice serving trained pickle models on port 8001
+- **Feature Processing**: Automatic conversion from form data to model-ready features with categorical encoding
+- **Data Preprocessing**: Standard scaler integration for proper feature normalization
+- **Model Requirements**: Supports both trained model (.pkl) and standard scaler (.pkl) files
+- **Error Handling**: Graceful error messages when ML service or model files are unavailable
+- **Service Communication**: Node.js backend communicates with Python ML service via HTTP API calls
+
+## ML Service Setup
+- **Model Files**: Place trained model in `ml_service/liver_disease_model.pkl`
+- **Scaler Files**: Place standard scaler in `ml_service/standard_scaler.pkl`
+- **Service Start**: Run `python3 start_ml_service.py` to start ML service on port 8001
+- **Integration Test**: Use `python3 test_ml_integration.py` to verify setup
+- **Feature Format**: 10 features including age, gender, BMI, lifestyle factors, and medical history
 
 # External Dependencies
 
@@ -61,6 +71,13 @@ Preferred communication style: Simple, everyday language.
 - **TanStack Query**: Server state management for API calls with caching and background updates
 - **Date-fns**: Date manipulation utilities for timestamp handling and formatting
 - **Replit Integration**: Development environment plugins for error overlay and cartographer mapping
+
+## ML and Python Services
+- **FastAPI**: Python web framework for serving machine learning models
+- **NumPy**: Numerical computing for feature preprocessing and model operations
+- **Joblib**: Model persistence and loading for pickle files
+- **Scikit-learn**: Machine learning utilities and standard scaler functionality
+- **Uvicorn**: ASGI server for running the FastAPI ML service
 
 ## Styling and Design
 - **Tailwind CSS**: Utility-first CSS framework with custom medical theme configuration

@@ -42,6 +42,19 @@ export default function LiverPredictionForm({ onResult, onLoadingChange }: Liver
   const predictMutation = useMutation({
     mutationFn: async (data: InsertPrediction) => {
       const response = await apiRequest("POST", "/api/predict", data);
+      
+      // Handle HTTP error responses
+      if (!response.ok) {
+        const errorData = await response.json();
+        
+        // Check if it's an ML service error
+        if (response.status === 503 && errorData.message === "ML prediction service unavailable") {
+          throw new Error(`ML Service Unavailable: The machine learning prediction service is not running. Please ensure both the trained model and scaler files are available and the ML service is started.`);
+        }
+        
+        throw new Error(errorData.message || errorData.details || `Server error: ${response.status}`);
+      }
+      
       return response.json();
     },
     onSuccess: (result) => {
@@ -54,10 +67,15 @@ export default function LiverPredictionForm({ onResult, onLoadingChange }: Liver
     },
     onError: (error: any) => {
       onLoadingChange(false);
+      
+      // Show detailed error message for ML service issues
+      const errorMessage = error.message || "Something went wrong. Please try again.";
+      
       toast({
         title: "Prediction Failed",
-        description: error.message || "Something went wrong. Please try again.",
+        description: errorMessage,
         variant: "destructive",
+        duration: 8000, // Show longer for service errors
       });
     },
   });

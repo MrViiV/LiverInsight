@@ -38,37 +38,46 @@ def test_ml_service():
         sys.path.append('ml_service')
         from model_server import app, load_model, preprocess_input, PredictionInput
         
-        # Load model
-        print("2. Loading model...")
-        model_loaded = load_model()
+        # Load model and scaler
+        print("2. Loading model and scaler...")
+        files_loaded = load_model()
         
-        if not model_loaded:
-            print("⚠️  No model file found - using mock predictions")
+        if not files_loaded:
+            print("⚠️  Model or scaler files not found")
+            print("   Place your files in:")
+            print("   - ml_service/liver_disease_model.pkl")  
+            print("   - ml_service/standard_scaler.pkl")
         else:
-            print("✅ Model loaded successfully")
+            print("✅ Model and scaler loaded successfully")
         
-        # Test preprocessing
-        print("3. Testing data preprocessing...")
-        input_data = PredictionInput(**test_data)
-        features = preprocess_input(input_data)
-        print(f"✅ Preprocessed features shape: {features.shape}")
-        print(f"   Features: {features.flatten()}")
+        if files_loaded:
+            # Test preprocessing only if files are loaded
+            print("3. Testing data preprocessing...")
+            input_data = PredictionInput(**test_data)
+            try:
+                features = preprocess_input(input_data)
+                print(f"✅ Preprocessed features shape: {features.shape}")
+                print(f"   Features: {features.flatten()}")
+                
+                print("\n4. Testing prediction...")
+                # Direct prediction test (without HTTP)
+                from model_server import predict
+                import asyncio
+                
+                result = asyncio.run(predict(input_data))
+                print(f"✅ Prediction result:")
+                print(f"   Risk Score: {result.riskScore}")
+                print(f"   Risk Level: {result.riskLevel}")
+                print(f"   Probability: {result.probability}")
+                print(f"   Confidence: {result.confidence}")
+                
+                print("\n🎉 ML Service integration test completed successfully!")
+                
+            except Exception as e:
+                print(f"❌ Preprocessing/prediction failed: {e}")
+                return False
         
-        print("\n4. Testing prediction...")
-        # Direct prediction test (without HTTP)
-        from model_server import predict
-        import asyncio
-        
-        result = asyncio.run(predict(input_data))
-        print(f"✅ Prediction result:")
-        print(f"   Risk Score: {result.riskScore}")
-        print(f"   Risk Level: {result.riskLevel}")
-        print(f"   Probability: {result.probability}")
-        print(f"   Confidence: {result.confidence}")
-        
-        print("\n🎉 ML Service integration test completed successfully!")
-        
-        return True
+        return files_loaded
         
     except ImportError as e:
         print(f"❌ Import error: {e}")

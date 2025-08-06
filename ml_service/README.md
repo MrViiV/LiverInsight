@@ -10,10 +10,23 @@ This directory contains the Python machine learning service for liver disease pr
    - `liver_disease_model.pkl` (project root)
    - `model.pkl` (project root)
 
-2. **Optional: Feature columns file**
+2. **Place your scaler file** in one of these locations:
+   - `ml_service/standard_scaler.pkl` (recommended)
+   - `ml_service/scaler.pkl`
+   - `standard_scaler.pkl` (project root)
+   - `scaler.pkl` (project root)
+   - `ml_service/liver_disease_scaler.pkl`
+
+3. **Optional: Feature columns file**
    If your model requires specific feature ordering, save the feature names as:
    - `ml_service/liver_disease_model_features.pkl`
    - Or update the `feature_columns` list in `model_server.py`
+
+## Required Files
+
+Both files are **required** for the ML service to work:
+- **Model file (.pkl)**: Your trained machine learning model
+- **Scaler file (.pkl)**: Standard scaler used during training
 
 ## Model Requirements
 
