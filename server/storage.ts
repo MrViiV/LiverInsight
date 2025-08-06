@@ -1,5 +1,7 @@
 import { type User, type InsertUser, type Prediction, type InsertPrediction } from "@shared/schema";
 import { randomUUID } from "crypto";
+import dotenv from 'dotenv';
+dotenv.config();
 
 export interface IStorage {
   getUser(id: string): Promise<User | undefined>;
