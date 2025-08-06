@@ -37,9 +37,21 @@ export class MemStorage implements IStorage {
   }
 
   async predictLiverDisease(data: InsertPrediction): Promise<Prediction> {
-    // Liver disease prediction algorithm
-    const riskScore = this.calculateRiskScore(data);
-    const riskLevel = this.determineRiskLevel(riskScore);
+    // Call Python ML service for prediction
+    let riskScore: number;
+    let riskLevel: string;
+    
+    try {
+      const mlResponse = await this.callMLService(data);
+      riskScore = mlResponse.riskScore;
+      riskLevel = mlResponse.riskLevel;
+    } catch (error) {
+      console.error('ML service error, using fallback calculation:', error);
+      // Fallback to rule-based calculation if ML service fails
+      riskScore = this.calculateRiskScore(data);
+      riskLevel = this.determineRiskLevel(riskScore);
+    }
+    
     const factors = this.analyzeRiskFactors(data);
     const recommendations = this.generateRecommendations(data, riskLevel);
 
@@ -61,6 +73,24 @@ export class MemStorage implements IStorage {
       factors,
       recommendations,
     } as any;
+  }
+
+  private async callMLService(data: InsertPrediction) {
+    const ML_SERVICE_URL = process.env.ML_SERVICE_URL || 'http://localhost:8001';
+    
+    const response = await fetch(`${ML_SERVICE_URL}/predict`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      throw new Error(`ML service responded with status: ${response.status}`);
+    }
+
+    return await response.json();
   }
 
   async savePrediction(prediction: Prediction): Promise<Prediction> {
