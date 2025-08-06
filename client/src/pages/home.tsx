@@ -19,7 +19,6 @@ export default function Home() {
               </div>
               <div>
                 <h1 className="text-2xl font-bold text-gray-900">Liver Disease Prediction</h1>
-                <p className="text-sm text-gray-600">AI-Powered Medical Assessment Tool</p>
               </div>
             </div>
             <div className="hidden md:flex items-center space-x-4">
@@ -87,11 +86,7 @@ export default function Home() {
                   <li>• Laboratory test results</li>
                   <li>• Genetic predisposition factors</li>
                 </ul>
-                <div className="bg-gray-50 rounded-lg p-3 mt-4">
-                  <p className="text-xs text-gray-500">
-                    <strong>Accuracy:</strong> This tool has been validated on clinical datasets with high sensitivity and specificity for liver disease detection.
-                  </p>
-                </div>
+
               </div>
             </div>
           </div>
