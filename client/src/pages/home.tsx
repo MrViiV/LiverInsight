@@ -24,10 +24,6 @@ export default function Home() {
             </div>
             <div className="hidden md:flex items-center space-x-4">
               <div className="flex items-center space-x-2 text-sm text-gray-600">
-                <Shield className="h-4 w-4 text-green-500" />
-                <span>HIPAA Compliant</span>
-              </div>
-              <div className="flex items-center space-x-2 text-sm text-gray-600">
                 <Stethoscope className="h-4 w-4 text-blue-500" />
                 <span>Clinically Validated</span>
               </div>
