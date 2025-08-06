@@ -247,6 +247,11 @@ async def batch_predict(data_list: List[PredictionInput]):
     
     return {"predictions": results}
 
+@app.get("/ping")
+async def ping():
+    return {"message": "pong"}
+
+
 if __name__ == "__main__":
     # Load model on startup
     load_model()
