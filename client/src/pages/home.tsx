@@ -116,7 +116,7 @@ export default function Home() {
                 <span>Clinically Validated</span>
               </div>
             </div>
-            <p className="text-sm text-gray-500">© 2024 Liver Health Analytics. For assessment purposes use only.</p>
+            <p className="text-sm text-gray-500">© 2025 Liver Health Analytics. For assessment purposes use only.</p>
           </div>
         </div>
       </footer>
