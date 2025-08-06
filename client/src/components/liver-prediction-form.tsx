@@ -70,7 +70,10 @@ export default function LiverPredictionForm({ onResult, onLoadingChange }: Liver
   // Calculate progress based on filled fields
   const watchedValues = form.watch();
   const requiredFields = ['age', 'gender', 'bmi', 'smoking', 'geneticRisk', 'diabetes', 'hypertension'];
-  const filledRequiredFields = requiredFields.filter(field => watchedValues[field as keyof InsertPrediction] !== undefined && watchedValues[field as keyof InsertPrediction] !== '').length;
+  const filledRequiredFields = requiredFields.filter(field => {
+    const value = watchedValues[field as keyof InsertPrediction];
+    return value !== undefined && value !== null && value !== '';
+  }).length;
   const calculatedProgress = (filledRequiredFields / requiredFields.length) * 100;
   
   if (calculatedProgress !== progress) {

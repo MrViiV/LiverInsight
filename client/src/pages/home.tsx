@@ -87,11 +87,7 @@ export default function Home() {
                   <li>• Laboratory test results</li>
                   <li>• Genetic predisposition factors</li>
                 </ul>
-                <div className="bg-gray-50 rounded-lg p-3 mt-4">
-                  <p className="text-xs text-gray-500">
-                    <strong>Accuracy:</strong> This tool has been validated on clinical datasets with high sensitivity and specificity for liver disease detection.
-                  </p>
-                </div>
+
               </div>
             </div>
           </div>
