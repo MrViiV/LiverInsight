@@ -34,7 +34,8 @@ def main():
         ('pandas', 'pandas==2.0.3'),
         ('sklearn', 'scikit-learn==1.3.0'),
         ('joblib', 'joblib==1.3.2'),
-        ('requests', 'requests==2.31.0')
+        ('requests', 'requests==2.31.0'),
+        ('xgboost', 'xgboost==2.0.3')
     ]
     
     print(f"Python version: {sys.version}")
@@ -80,6 +81,7 @@ def main():
         import sklearn
         import joblib
         import requests
+        import xgboost
         print("✅ All ML dependencies are working correctly!")
     except ImportError as e:
         print(f"⚠️  Import test failed: {e}")
