@@ -35,7 +35,6 @@ export default function Home() {
           </div>
         </div>
       </header>
-
       <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Introduction Section */}
         <div className="text-center mb-12">
@@ -102,7 +101,6 @@ export default function Home() {
           </div>
         </div>
       </main>
-
       {/* Footer */}
       <footer className="bg-white border-t border-gray-200 mt-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -121,7 +119,7 @@ export default function Home() {
                 <span>Clinically Validated</span>
               </div>
             </div>
-            <p className="text-sm text-gray-500">© 2024 Liver Health Analytics. For healthcare professional use only.</p>
+            <p className="text-sm text-gray-500">© 2024 Liver Health Analytics. For assessment purposes use only.</p>
           </div>
         </div>
       </footer>
