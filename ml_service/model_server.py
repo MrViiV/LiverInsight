@@ -247,8 +247,10 @@ async def batch_predict(data_list: List[PredictionInput]):
     
     return {"predictions": results}
 
-@app.get("/ping")
-async def ping():
+
+@app.get("/ping", include_in_schema=False)
+@app.head("/ping", include_in_schema=False)
+def ping():
     return {"message": "pong"}
 
 
